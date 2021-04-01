@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const imgs = [];
+
+        function onloadImg (){
+            this.ready = 1;
+            if(imgs.reduce((sum, current) => sum * current.ready, 1))
+            {
+                let i = 0;
+                let filter = ``;
+                const filterInterval = setInterval(() => {
+                    filter = `opacity(${0.4*i/30}) sepia(1)`;
+                    if(i>15) clearInterval(filterInterval);
+                }, 15);
+                setInterval(() => {
+                    i>119 && (i=0);
+                    ctx.filter = filter;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(imgs[i++], 0, 0, canvas.height*this.width/this.height, canvas.height);    
+                }, 1000/15)
+            }
+        }
+
+        for (let i = 0; i < 120; i++) {
+            imgs[i] = new Image();
+            this.ready = 0;
+            imgs[i].onload = onloadImg;
+            imgs[i].src = `https://www.amc.com/twdu/images/atmosphereEffects/FX02_Pollen/images/vfx_anim-sheet${i}.png`;
+        }   
+
+        const canvas = document.createElement('canvas');
+        canvas.style.position = 'absolute';
+        document.body.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+    </script>
+</body>
+</html>
